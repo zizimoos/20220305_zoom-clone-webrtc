@@ -23,6 +23,21 @@ const io = new Server(server, {
 io.on("connection", (socket) => {
   console.log("a user connected");
 
+  socket.on("join_room", (roomName) => {
+    socket.join(roomName);
+    socket.to(roomName).emit("welcome", socket.id);
+  });
+
+  socket.on("offer", (offer, roomName) => {
+    socket.to(roomName).emit("offer", offer);
+  });
+  socket.on("answer", (answer, roomName) => {
+    socket.to(roomName).emit("answer", answer);
+  });
+  socket.on("ice_candidate", (candidate, roomName) => {
+    socket.to(roomName).emit("ice_candidate", candidate);
+  });
+
   socket.on("disconnecting", (reason) => {});
   socket.on("disconnect", () => {
     console.log("user disconnected");
